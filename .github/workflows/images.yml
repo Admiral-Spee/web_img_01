@@ -1,4 +1,4 @@
-name: 压缩图片
+name: Compress Images on Push to main branch
 on:
   push:
     branches:
@@ -8,29 +8,24 @@ on:
       - '**.jpeg'
       - '**.png'
       - '**.webp'
-  workflow_dispatch:
 jobs:
   build:
     name: calibreapp/image-actions
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Compress Images
         id: calibre
         uses: calibreapp/image-actions@main
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           compressOnly: true
-          jpegQuality: '60'
-          jpegProgressive: false
-          pngQuality: '60'
-          webpQuality: '60'
       - name: Create New Pull Request If Needed
         if: steps.calibre.outputs.markdown != ''
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         with:
-          title: '🛠 压缩图片'
+          title: Compressed Images
           branch-suffix: timestamp
-          commit-message: '🛠 压缩图片'
+          commit-message: Compressed Images
           body: ${{ steps.calibre.outputs.markdown }}
